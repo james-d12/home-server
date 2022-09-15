@@ -1,0 +1,19 @@
+version: "3"
+services:
+  jellyfin:
+    container_name: jellyfin
+    image: jellyfin/jellyfin:latest
+    ports:
+      - "8096:8096"
+    user: 1000:1000
+    network_mode: "host"
+    volumes:
+      - ./content/config/config:/config
+      - ./content/cache/cache:/cache
+      - ./content/media:/media
+    restart: "unless-stopped"
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1024m

@@ -1,0 +1,12 @@
+version: "3"
+services:
+  homer:
+    image: b4bz/homer
+    container_name: homer
+    volumes:
+      - ./content/:/www/assets
+    ports:
+      - 8080:8080
+    user: 1000:1000
+    environment:
+      - INIT_ASSETS=1
