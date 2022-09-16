@@ -1,0 +1,23 @@
+version: "3"
+services:
+  homepage:
+    image: ghcr.io/benphelps/homepage:latest
+    container_name: homepage
+    user: ${PUID}:${PGID}
+    ports:
+      - 3000:3000
+    volumes:
+      - ${APP_DIR}/homepage:/app/config
+      - ${DOCKER_SOCK_DIR}:${DOCKER_SOCK_DIR}
+
+  jellyfin:
+    container_name: jellyfin
+    image: jellyfin/jellyfin:latest
+    user: ${PUID}:${PGID}
+    network_mode: "host"
+    volumes:
+      - ${APP_DIR}/jellyfin/config:/config
+      - ${APP_DIR}/jellyfin/cache:/cache
+      - ${MEDIA_DIR}:/media
+      - ${DOCKER_SOCK_DIR}:${DOCKER_SOCK_DIR}
+    restart: "unless-stopped"

@@ -1,1 +1,4 @@
-content/
+*
+!.env.template
+!docker-compose.yml
+!Makefile
