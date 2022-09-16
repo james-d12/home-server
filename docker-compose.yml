@@ -1,26 +1,26 @@
 version: "3"
 services:
-  traefik:
-    image: traefik:v2.8
-    container_name: traefik
-    command:
-      - --api.insecure=true
-      - --providers.docker=true
-      - --providers.docker.exposedbydefault=false
-      - --entrypoints.web.address=:80
-    volumes:
-      - ${DOCKER_SOCK_DIR}:${DOCKER_SOCK_DIR}:ro
-    ports:
-      - 80:80
-      - 8080:8080
+  #traefik:
+  #  image: traefik:v2.8
+  #  container_name: traefik
+  #  command:
+  #    - --api.insecure=true
+  #    - --providers.docker=true
+  #    - --providers.docker.exposedbydefault=false
+  #    - --entrypoints.web.address=:80
+  #  volumes:
+  #    - ${DOCKER_SOCK_DIR}:${DOCKER_SOCK_DIR}:ro
+  #  ports:
+  #    - 80:80
+  #    - 8080:8080
 
-  whoami:
-    image: traefik/whoami
-    container_name: "traefik-whoami"
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.whoami.rule=Host(`whoami.localhost`)
-      - traefik.http.routers.whoami.entrypoints=web
+  #whoami:
+  #  image: traefik/whoami
+  #  container_name: "traefik-whoami"
+  #  labels:
+  #    - traefik.enable=true
+  #    - traefik.http.routers.whoami.rule=Host(`whoami.localhost`)
+  #    - traefik.http.routers.whoami.entrypoints=web
 
   portainer:
     image: portainer/portainer-ce:latest

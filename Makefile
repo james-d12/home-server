@@ -2,6 +2,9 @@
 
 include .env
 
+copy-config:
+	cp -R ./config/* ${APP_DIR}/
+
 start:
 	sudo docker-compose --env-file ./.env up -d
 	sudo chown -R user: ${APP_DIR}
