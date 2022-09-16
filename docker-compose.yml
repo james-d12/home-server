@@ -1,18 +1,55 @@
 version: "3"
 services:
+  traefik:
+    image: traefik:v2.8
+    container_name: traefik
+    command:
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+    volumes:
+      - ${DOCKER_SOCK_DIR}:${DOCKER_SOCK_DIR}:ro
+    ports:
+      - 80:80
+      - 8080:8080
+
+  whoami:
+    image: traefik/whoami
+    container_name: "traefik-whoami"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.whoami.rule=Host(`whoami.localhost`)
+      - traefik.http.routers.whoami.entrypoints=web
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: "unless-stopped"
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ${APP_DIR}/portainer:/data
+      - /etc/localtime:/etc/localtime:ro
+      - ${DOCKER_SOCK_DIR}:${DOCKER_SOCK_DIR}:ro
+    ports:
+      - 9000:9000
+
   homepage:
     image: ghcr.io/benphelps/homepage:latest
     container_name: homepage
+    restart: "unless-stopped"
     user: ${PUID}:${PGID}
-    ports:
-      - 3000:3000
     volumes:
       - ${APP_DIR}/homepage:/app/config
       - ${DOCKER_SOCK_DIR}:${DOCKER_SOCK_DIR}
+    ports:
+      - 3000:3000
 
   jellyfin:
-    container_name: jellyfin
     image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    restart: "unless-stopped"
     user: ${PUID}:${PGID}
     network_mode: "host"
     volumes:
@@ -20,4 +57,3 @@ services:
       - ${APP_DIR}/jellyfin/cache:/cache
       - ${MEDIA_DIR}:/media
       - ${DOCKER_SOCK_DIR}:${DOCKER_SOCK_DIR}
-    restart: "unless-stopped"

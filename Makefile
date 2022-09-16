@@ -8,6 +8,11 @@ start:
 	sudo chmod -R u+x ${APP_DIR}
 stop: 
 	sudo docker-compose down
-
+restart:
+	sudo docker-compose restart
+log:
+	sudo docker-compose logs $(app)
+list:
+	sudo docker container ls
 clean:
 	rm -rf ${APP_DIR}
