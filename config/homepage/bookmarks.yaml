@@ -5,6 +5,12 @@
     - Github:
         - abbr: GH
           href: https://github.com/
+    - Gitlab:
+        - abbr: GL
+          href: https://gitlab.com/
+    - StackOverflow:
+        - abbr: SO
+          href: https://stackoverflow.com/
 
 - Social:
     - Reddit:

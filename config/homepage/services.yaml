@@ -1,17 +1,23 @@
 # For configuration options and examples, please see:
 # https://github.com/benphelps/homepage/wiki/Services
 
-- My First Group:
-    - My First Service:
-        href: http://localhost/
-        description: Homepage is awesome
+- Applications:
+    - Jellyfin:
+        icon: https://features.jellyfin.org/images/logos/a7Lx9nYDzWuDR94Az8Yum7neWMvNMndkm9qr4QVtmjaMrOHDLisS5K7LJctTRzK9-icon-transparent.png?size=100
+        href: http://192.168.0.4:8096   
+        description: Jellyfin media streaming instance.
+        server: my-docker
+        container: jellyfin
+    - Bookstack:
+        icon: https://raw.githubusercontent.com/BookStackApp/BookStack/development/public/favicon.ico
+        href: http://192.168.0.4:3010
+        description: Bookstack wikipedia instance.
+        container: bookstack
 
-- My Second Group:
-    - My Second Service:
-        href: http://localhost/
-        description: Homepage is the best
-
-- My Third Group:
-    - My Third Service:
-        href: http://localhost/
-        description: Homepage is 😎
+- Tools:
+    - Portainer:
+        icon: https://cdn.worldvectorlogo.com/logos/portainer.svg
+        href: http://192.168.0.4:9000
+        description: Portainer manages Docker / Kubernetes.
+        container: portainer
+    

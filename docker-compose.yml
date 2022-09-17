@@ -1,31 +1,11 @@
 version: "3"
 services:
-  #traefik:
-  #  image: traefik:v2.8
-  #  container_name: traefik
-  #  command:
-  #    - --api.insecure=true
-  #    - --providers.docker=true
-  #    - --providers.docker.exposedbydefault=false
-  #    - --entrypoints.web.address=:80
-  #  volumes:
-  #    - ${DOCKER_SOCK_DIR}:${DOCKER_SOCK_DIR}:ro
-  #  ports:
-  #    - 80:80
-  #    - 8080:8080
-
-  #whoami:
-  #  image: traefik/whoami
-  #  container_name: "traefik-whoami"
-  #  labels:
-  #    - traefik.enable=true
-  #    - traefik.http.routers.whoami.rule=Host(`whoami.localhost`)
-  #    - traefik.http.routers.whoami.entrypoints=web
-
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer
     restart: "unless-stopped"
+    hostname: portainer
+    domainname: portainer.localhost
     security_opt:
       - no-new-privileges:true
     volumes:
@@ -46,14 +26,58 @@ services:
     ports:
       - 3000:3000
 
+  filebrowser:
+    image: filebrowser/filebrowser:s6
+    container_name: filebrowser
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - ${APP_DIR}/filebrowser:/srv/app-data
+      - ${APP_DIR}/filebrowser/media:/srv/media
+      - ${APP_DIR}/filebrowser/data/db:/database
+      - ${APP_DIR}/filebrowser/data/config:/config
+    ports:
+      - 3030:80
+
+  bookstack:
+    image: lscr.io/linuxserver/bookstack:22.07.3
+    container_name: bookstack
+    environment:
+      - APP_URL=http://192.168.0.4:3010
+      - DB_HOST=bookstack-db
+      - DB_USERNAME=user
+      - DB_PASSWORD=123456789
+      - DB_DATABASE=bookstackapp
+    volumes:
+      - ${APP_DIR}/bookstack:/config
+    ports:
+      - 3010:80
+    restart: unless-stopped
+    depends_on:
+      - bookstack-db
+
+  bookstack-db:
+    image: lscr.io/linuxserver/mariadb
+    container_name: bookstack-db
+    environment:
+      - TZ=Europe/London
+      - MYSQL_DATABASE=bookstackapp
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=123456789
+    volumes:
+      - ${APP_DIR}/bookstack/db:/config
+    restart: unless-stopped
+
   jellyfin:
     image: jellyfin/jellyfin:latest
     container_name: jellyfin
     restart: "unless-stopped"
     user: ${PUID}:${PGID}
-    network_mode: "host"
     volumes:
       - ${APP_DIR}/jellyfin/config:/config
       - ${APP_DIR}/jellyfin/cache:/cache
       - ${MEDIA_DIR}:/media
       - ${DOCKER_SOCK_DIR}:${DOCKER_SOCK_DIR}
+    ports:
+      - 8096:8096
