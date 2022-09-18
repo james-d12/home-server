@@ -1,0 +1,31 @@
+bookstack:
+  image: lscr.io/linuxserver/bookstack:22.07.3
+  container_name: bookstack
+  depends_on:
+    - bookstack-db
+  environment:
+    - DB_HOST=bookstack-db
+    - DB_USERNAME=user
+    - DB_PASSWORD=123456789
+    - DB_DATABASE=bookstackapp
+  ports:
+    - 3010:80
+  networks:
+    - big-mama
+  volumes:
+    - ${APP_DIR}/bookstack:/config
+  restart: unless-stopped
+
+bookstack-db:
+  image: lscr.io/linuxserver/mariadb
+  container_name: bookstack-db
+  environment:
+    - TZ=${TZ}
+    - MYSQL_DATABASE=bookstackapp
+    - MYSQL_USER=user
+    - MYSQL_PASSWORD=123456789
+  networks:
+    - big-mama
+  volumes:
+    - ${APP_DIR}/bookstack/db:/config
+  restart: unless-stopped

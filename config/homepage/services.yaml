@@ -2,27 +2,47 @@
 # https://github.com/benphelps/homepage/wiki/Services
 
 - Applications:
-    - Jellyfin:
-        icon: https://features.jellyfin.org/images/logos/a7Lx9nYDzWuDR94Az8Yum7neWMvNMndkm9qr4QVtmjaMrOHDLisS5K7LJctTRzK9-icon-transparent.png?size=100
-        href: http://192.168.0.4:8096   
-        description: Jellyfin media streaming instance.
-        server: my-docker
-        container: jellyfin
-    - Bookstack:
-        icon: https://raw.githubusercontent.com/BookStackApp/BookStack/development/public/favicon.ico
-        href: http://192.168.0.4:3010
-        description: Bookstack wikipedia instance.
-        container: bookstack
     - Filebrowser:
-        icon: https://raw.githubusercontent.com/filebrowser/filebrowser/c1e6d5869acf32cda22fa7dd532ebb6130061b7b/frontend/public/img/logo.svg
+        icon: filebrowser.png
         href: http://192.168.0.4:3030
         description: Filebrowser instance.
         container: filebrowser
+    - LibReddit:
+        icon: libreddit.png
+        href: http://192.168.0.4:3050
+        description: Open source frontend for reddit.com.
+        container: libreddit
+
+- Media:
+    - Jellyfin:
+        icon: jellyfin.png
+        href: http://192.168.0.4:8096   
+        description: Jellyfin media streaming instance.
+        container: jellyfin
+    - Sonarr:
+        icon: sonarr.png
+        href: http://192.168.0.4:3070
+        description: Sonarr is a RSS feed monitor.
+        container: sonarr
+    - Radarr:
+        icon: radarr.png
+        href: http://192.168.0.4:3080
+        description: Radarr is a TV show monitor.
+        container: radarr
 
 - Tools:
     - Portainer:
-        icon: https://cdn.worldvectorlogo.com/logos/portainer.svg
+        icon: portainer.png
         href: http://192.168.0.4:9000
         description: Portainer manages Docker / Kubernetes.
         container: portainer
-    
+    - Traefik:
+        icon: traefik.png
+        href: http://192.168.0.4:8080
+        description: Traefik Dashboard instance.
+        container: traefik
+    - Grafana:
+        icon: grafana.png
+        href: http://192.168.0.4:3090
+        description: Grafana monitoring dashboard instance.
+        container: grafana
