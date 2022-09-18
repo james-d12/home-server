@@ -15,7 +15,8 @@ services:
     networks:
       - ${NETWORK_NAME}
     volumes:
-      - ${APP_DIR}/traefik:/etc/traefik
+      - ${APP_DIR}/traefik:/root/.config
+      - ${APP_DIR}/traefik/shared:/shared
       - ${DOCKER_SOCK}:${DOCKER_SOCK}:ro
     restart: unless-stopped
 
@@ -85,7 +86,7 @@ services:
       - ${APP_DIR}/jellyfin/config:/config
       - ${APP_DIR}/jellyfin/cache:/cache
       - ${MEDIA_DIR}:/media
-      - ${DOCKER_SOCK}:${DOCKER_SOCK}
+      - ${DOCKER_SOCK}:${DOCKER_SOCK}:ro
     restart: unless-stopped
 
   libreddit:
