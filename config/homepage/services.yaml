@@ -13,6 +13,11 @@
         href: http://192.168.0.4:3010
         description: Bookstack wikipedia instance.
         container: bookstack
+    - Filebrowser:
+        icon: https://raw.githubusercontent.com/filebrowser/filebrowser/c1e6d5869acf32cda22fa7dd532ebb6130061b7b/frontend/public/img/logo.svg
+        href: http://192.168.0.4:3030
+        description: Filebrowser instance.
+        container: filebrowser
 
 - Tools:
     - Portainer:
