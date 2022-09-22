@@ -10,7 +10,7 @@ services:
       - --entrypoints.http.address=:80
       - --entrypoints.https.address=:443
     ports:
-      - 80:80
+      - 4000:80
       - 8080:8080
     networks:
       - ${NETWORK_NAME}
@@ -141,6 +141,27 @@ services:
       - 3090:3000
     networks:
       - ${NETWORK_NAME}
+    restart: unless-stopped
+
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole
+    ports:
+      - 4030:53/tcp
+      - 4020:53/udp
+      - 4010:80/tcp
+    networks:
+      - ${NETWORK_NAME}
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ${APP_DIR}/pihole:/etc/pihole/
+      - ${APP_DIR}/pihole/dnsmasq.d:/etc/dnsmasq.d/
+    dns:
+      - 127.0.0.1
+      - 1.1.1.1
+    cap_add:
+      - NET_ADMIN
     restart: unless-stopped
 
 networks:
