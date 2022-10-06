@@ -1,59 +1,170 @@
 version: "3"
 services:
-  #traefik:
-  #  image: traefik:v2.8
-  #  container_name: traefik
-  #  command:
-  #    - --api.insecure=true
-  #    - --providers.docker=true
-  #    - --providers.docker.exposedbydefault=false
-  #    - --entrypoints.web.address=:80
-  #  volumes:
-  #    - ${DOCKER_SOCK_DIR}:${DOCKER_SOCK_DIR}:ro
-  #  ports:
-  #    - 80:80
-  #    - 8080:8080
-
-  #whoami:
-  #  image: traefik/whoami
-  #  container_name: "traefik-whoami"
-  #  labels:
-  #    - traefik.enable=true
-  #    - traefik.http.routers.whoami.rule=Host(`whoami.localhost`)
-  #    - traefik.http.routers.whoami.entrypoints=web
+  traefik:
+    image: traefik:v2.8
+    container_name: traefik
+    command:
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.http.address=:80
+      - --entrypoints.https.address=:443
+    ports:
+      - 4000:80
+      - 8080:8080
+    networks:
+      - ${NETWORK_NAME}
+    volumes:
+      - ${APP_DIR}/traefik:/root/.config
+      - ${APP_DIR}/traefik/shared:/shared
+      - ${DOCKER_SOCK}:${DOCKER_SOCK}:ro
+    restart: unless-stopped
 
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer
-    restart: "unless-stopped"
     security_opt:
       - no-new-privileges:true
+    ports:
+      - 9000:9000
+    networks:
+      - ${NETWORK_NAME}
     volumes:
       - ${APP_DIR}/portainer:/data
       - /etc/localtime:/etc/localtime:ro
-      - ${DOCKER_SOCK_DIR}:${DOCKER_SOCK_DIR}:ro
-    ports:
-      - 9000:9000
+      - ${DOCKER_SOCK}:${DOCKER_SOCK}:ro
+    restart: unless-stopped
 
   homepage:
     image: ghcr.io/benphelps/homepage:latest
     container_name: homepage
-    restart: "unless-stopped"
-    user: ${PUID}:${PGID}
-    volumes:
-      - ${APP_DIR}/homepage:/app/config
-      - ${DOCKER_SOCK_DIR}:${DOCKER_SOCK_DIR}
+    environment:
+      - TZ=${TZ}
+      - PUID=1000
+      - PGID=1000
     ports:
       - 3000:3000
+    networks:
+      - ${NETWORK_NAME}
+    volumes:
+      - ${APP_DIR}/homepage:/app/config
+      - ${APP_DIR}/homepage:/app/public/icons
+      - ${DOCKER_SOCK}:${DOCKER_SOCK}
+    restart: "unless-stopped"
+
+  filebrowser:
+    image: filebrowser/filebrowser:s6
+    container_name: filebrowser
+    environment:
+      - PUID=1000
+      - PGID=1000
+    ports:
+      - 3030:80
+    networks:
+      - ${NETWORK_NAME}
+    volumes:
+      - ${APP_DIR}/filebrowser:/srv/app-data
+      - ${APP_DIR}/filebrowser/data/db:/database
+      - ${APP_DIR}/filebrowser/data/config:/config
+      - ${MEDIA_DIR}/:/srv/media
+    restart: unless-stopped
 
   jellyfin:
     image: jellyfin/jellyfin:latest
     container_name: jellyfin
-    restart: "unless-stopped"
     user: ${PUID}:${PGID}
-    network_mode: "host"
+    ports:
+      - 8096:8096
+    networks:
+      - ${NETWORK_NAME}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.jellyfin.entrypoints=http
+      - traefik.http.routers.jellyfin.rule=Host(`jellyfin.localhost`)
+      - traefik.docker.network=${NETWORK_NAME}
     volumes:
       - ${APP_DIR}/jellyfin/config:/config
       - ${APP_DIR}/jellyfin/cache:/cache
       - ${MEDIA_DIR}:/media
-      - ${DOCKER_SOCK_DIR}:${DOCKER_SOCK_DIR}
+      - ${DOCKER_SOCK}:${DOCKER_SOCK}:ro
+    restart: unless-stopped
+
+  libreddit:
+    image: spikecodes/libreddit
+    container_name: libreddit
+    ports:
+      - 3050:8080
+    networks:
+      - ${NETWORK_NAME}
+    restart: unless-stopped
+
+  sonarr:
+    image: linuxserver/sonarr:latest
+    container_name: sonarr
+    ports:
+      - 3070:8989
+    networks:
+      - ${NETWORK_NAME}
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${APP_DIR}/sonarr:/config
+      - ${MEDIA_DIR}/shows/complete:/tv
+      - ${MEDIA_DIR}/shows/downloads:/downloads
+    restart: unless-stopped
+
+  radarr:
+    image: linuxserver/radarr:latest
+    container_name: radarr
+    ports:
+      - 3080:7878
+    networks:
+      - ${NETWORK_NAME}
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${APP_DIR}/radarr:/config
+      - ${MEDIA_DIR}/movies/complete:/movies
+      - ${MEDIA_DIR}/movies/downloads:/downloads
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    ports:
+      - 3090:3000
+    networks:
+      - ${NETWORK_NAME}
+    restart: unless-stopped
+
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole
+    ports:
+      - 4030:53/tcp
+      - 4020:53/udp
+      - 4010:80/tcp
+    networks:
+      - ${NETWORK_NAME}
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ${APP_DIR}/pihole:/etc/pihole/
+      - ${APP_DIR}/pihole/dnsmasq.d:/etc/dnsmasq.d/
+    dns:
+      - 127.0.0.1
+      - 1.1.1.1
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+
+networks:
+  big-mama:
+    name: ${NETWORK_NAME}
+    driver: bridge

@@ -1,17 +1,53 @@
 # For configuration options and examples, please see:
 # https://github.com/benphelps/homepage/wiki/Services
 
-- My First Group:
-    - My First Service:
-        href: http://localhost/
-        description: Homepage is awesome
+- Applications:
+    - Filebrowser:
+        icon: filebrowser.png
+        href: http://192.168.0.4:3030
+        description: Filebrowser instance.
+        container: filebrowser
+    - LibReddit:
+        icon: libreddit.png
+        href: http://192.168.0.4:3050
+        description: Open source frontend for reddit.com.
+        container: libreddit
 
-- My Second Group:
-    - My Second Service:
-        href: http://localhost/
-        description: Homepage is the best
+- Media:
+    - Jellyfin:
+        icon: jellyfin.png
+        href: http://192.168.0.4:8096   
+        description: Jellyfin media streaming instance.
+        container: jellyfin
+    - Sonarr:
+        icon: sonarr.png
+        href: http://192.168.0.4:3070
+        description: Sonarr is a RSS feed monitor.
+        container: sonarr
+    - Radarr:
+        icon: radarr.png
+        href: http://192.168.0.4:3080
+        description: Radarr is a TV show monitor.
+        container: radarr
 
-- My Third Group:
-    - My Third Service:
-        href: http://localhost/
-        description: Homepage is 😎
+- Tools:
+    - Portainer:
+        icon: portainer.png
+        href: http://192.168.0.4:9000
+        description: Portainer manages Docker / Kubernetes.
+        container: portainer
+    - Traefik:
+        icon: traefik.png
+        href: http://192.168.0.4:8080
+        description: Traefik Dashboard instance.
+        container: traefik
+    - Grafana:
+        icon: grafana.png
+        href: http://192.168.0.4:3090
+        description: Grafana monitoring dashboard instance.
+        container: grafana
+    - Pihole:
+        icon:
+        href: http://192.168.0.4:4010
+        description: Pihole instance.
+        container: pihole

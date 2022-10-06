@@ -5,11 +5,23 @@
     - Github:
         - abbr: GH
           href: https://github.com/
+    - Gitlab:
+        - abbr: GL
+          href: https://gitlab.com/
+    - StackOverflow:
+        - abbr: SO
+          href: https://stackoverflow.com/
 
 - Social:
     - Reddit:
         - abbr: RE
           href: https://reddit.com/
+    - Twitter:
+        - abbr: TW
+          href: https://twitter.com/
+    - Hacker News:
+        - abbr: HN
+          href: https://ycombinator.com/
 
 - Entertainment:
     - YouTube:
